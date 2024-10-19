@@ -1,1 +1,5 @@
 streamlit
+folium==0.17.0
+streamlit_folium==0.23.1
+streamlit-extras==0.4.3
+streamlit-image-coordinates==0.1.9
