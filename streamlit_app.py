@@ -2,6 +2,7 @@ import streamlit as st
 import folium
 from streamlit_folium import st_folium
 from streamlit_extras.image_coordinates import streamlit_image_coordinates
+import plotly.graph_objects as go
 
 # Inicializando o estado para os botões, se ainda não existir
 if 'botao1' not in st.session_state:
@@ -56,9 +57,6 @@ if st.session_state['botao1']:
 
 if st.session_state['botao2']:
     st.title("Pagina 2")
-
-    import streamlit as st
-    import plotly.graph_objects as go
 
     # Definir o título da aplicação no Streamlit
     st.title("Mapa Interativo do Supermercado")
