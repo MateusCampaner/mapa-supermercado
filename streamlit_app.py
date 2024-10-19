@@ -1,118 +1,48 @@
 import streamlit as st
-import folium
-from streamlit_folium import st_folium
-from streamlit_extras.image_coordinates import streamlit_image_coordinates
-import plotly.graph_objects as go
+import random
 
-# Inicializando o estado para os botões, se ainda não existir
-if 'botao1' not in st.session_state:
-    st.session_state['botao1'] = False
-if 'botao2' not in st.session_state:
-    st.session_state['botao2'] = False
-if 'botao3' not in st.session_state:
-    st.session_state['botao3'] = False
+if 'itens' not in st.session_state:
+    st.session_state.itens = []
 
-# Lógica dos botões para garantir que só um seja ativado por vez
-def clicar_botao1():
-    st.session_state['botao1'] = True
-    st.session_state['botao2'] = False
-    st.session_state['botao3'] = False
+if 'selected_image' not in st.session_state:
+    st.session_state.selected_image = "mapa-sem-rota.png"  
 
-def clicar_botao2():
-    st.session_state['botao1'] = False
-    st.session_state['botao2'] = True
-    st.session_state['botao3'] = False
+image_folders = {
+    "pasta1": ["pasta1/imagem1.png", "pasta1/imagem2.png", "pasta1/imagem3.png"],
+    "pasta2": ["pasta2/imagem1.png", "pasta2/imagem2.png", "pasta2/imagem3.png"],
+    "pasta3": ["pasta3/imagem1.png", "pasta3/imagem2.png", "pasta3/imagem3.png"],
+}
 
-def clicar_botao3():
-    st.session_state['botao1'] = False
-    st.session_state['botao2'] = False
-    st.session_state['botao3'] = True
+def adicionar_item():
+    item = st.session_state.novo_item
+    if item: 
+        st.session_state.itens.append(item)
+        st.session_state.novo_item = ""  
 
-# Barra lateral com os botões
-st.sidebar.title("Nome")
-st.sidebar.text("Texto texto texto")
+def limpar_lista():
+    st.session_state.itens.clear()  
+    st.session_state.selected_image = "mapa-sem-rota.png"  
+    st.experimental_rerun()  
 
-st.sidebar.button("Botao 1", on_click=clicar_botao1)
-st.sidebar.button("Botao 2", on_click=clicar_botao2)
-st.sidebar.button("Botao 3", on_click=clicar_botao3)
+image_path = "logo-cart.png" 
+st.sidebar.image(image_path, width=300)
 
-# Lógica para exibir o conteúdo de cada botão
-if st.session_state['botao1']:
-    # Centro do mapa (pode ser o ponto central do supermercado)
-    supermercado_lat = -23.5505
-    supermercado_lon = -46.6333
+st.sidebar.text_input("Adicionar item:", key='novo_item')
+st.sidebar.button("Adicionar", on_click=adicionar_item)
 
-    # Criação do mapa
-    mapa = folium.Map(location=[supermercado_lat, supermercado_lon], zoom_start=18)
+if st.sidebar.button("Limpar lista"):
+    limpar_lista()
 
-    # Marcando seções do supermercado
-    folium.Marker([supermercado_lat, supermercado_lon], popup='Entrada').add_to(mapa)
-    folium.Marker([supermercado_lat + 0.0001, supermercado_lon], popup='Frutas').add_to(mapa)
-    folium.Marker([supermercado_lat + 0.0002, supermercado_lon], popup='Laticínios').add_to(mapa)
-    folium.Marker([supermercado_lat + 0.0003, supermercado_lon], popup='Carnes').add_to(mapa)
+st.title("Mapa do Supermercado")
+st.image(st.session_state.selected_image, width=800)
 
-    # Exibir o mapa no Streamlit
-    st.title('Mapa do Supermercado')
-    st_data = st_folium(mapa, width=725)
+st.subheader("Itens na lista:")
+for item in st.session_state.itens:
+    st.checkbox(item)
 
-if st.session_state['botao2']:
-    st.title("Pagina 2")
-
-    # Definir o título da aplicação no Streamlit
-    st.title("Mapa Interativo do Supermercado")
-
-    # Criar uma figura Plotly
-    fig = go.Figure()
-
-    # Corredores (representados por blocos cinzas)
-    fig.add_trace(go.Scatter(
-        x=[2, 6, 6, 2, 2], y=[1, 1, 7, 7, 1], fill='toself', name='Corredor Central',
-        mode='lines', line=dict(color='gray'), hoverinfo='text', text="Corredor Central"
-    ))
-
-    # Prateleiras (representadas por blocos azuis)
-    prateleiras = [
-        {'name': 'Prateleira 1', 'x': [1, 2, 2, 1, 1], 'y': [1.5, 1.5, 6.5, 6.5, 1.5]},
-        {'name': 'Prateleira 2', 'x': [6, 7, 7, 6, 6], 'y': [1.5, 1.5, 6.5, 6.5, 1.5]},
-        {'name': 'Prateleira 3', 'x': [2.5, 6, 6, 2.5, 2.5], 'y': [2, 2, 2.5, 2.5, 2]},
-        {'name': 'Prateleira 4', 'x': [2.5, 6, 6, 2.5, 2.5], 'y': [3, 3, 3.5, 3.5, 3]},
-    ]
-
-    for prateleira in prateleiras:
-        fig.add_trace(go.Scatter(
-            x=prateleira['x'], y=prateleira['y'], fill='toself', name=prateleira['name'],
-            mode='lines', line=dict(color='lightblue'), hoverinfo='text', text=prateleira['name']
-        ))
-
-    # Caixas (representadas por blocos verdes)
-    fig.add_trace(go.Scatter(
-        x=[0.5, 2.5, 2.5, 0.5, 0.5], y=[7.5, 7.5, 8, 8, 7.5], fill='toself', name='Caixa 1',
-        mode='lines', line=dict(color='green'), hoverinfo='text', text="Caixa 1"
-    ))
-    fig.add_trace(go.Scatter(
-        x=[7.5, 9.5, 9.5, 7.5, 7.5], y=[7.5, 7.5, 8, 8, 7.5], fill='toself', name='Caixa 2',
-        mode='lines', line=dict(color='green'), hoverinfo='text', text="Caixa 2"
-    ))
-
-    # Seção de produtos frescos (representada por um bloco laranja)
-    fig.add_trace(go.Scatter(
-        x=[8.5, 10, 10, 8.5, 8.5], y=[1.5, 1.5, 4.5, 4.5, 1.5], fill='toself', name='Produtos Frescos',
-        mode='lines', line=dict(color='orange'), hoverinfo='text', text="Produtos Frescos"
-    ))
-
-    # Ajustar layout do gráfico
-    fig.update_layout(
-        showlegend=True,
-        xaxis=dict(range=[0, 10], showgrid=False, zeroline=False),
-        yaxis=dict(range=[0, 9], showgrid=False, zeroline=False),
-        title="Mapa Interativo do Supermercado",
-        width=800, height=600,
-        margin=dict(l=40, r=40, b=40, t=40)
-    )
-
-    # Exibir o gráfico no Streamlit
-    st.plotly_chart(fig)
-
-
-if st.session_state['botao3']:
-    st.title("Pagina 3")
+st.subheader("Seleção de itens:")
+if st.session_state.itens:
+    selecionado = st.selectbox("Selecione um item:", st.session_state.itens)
+    st.write(f"Você selecionou: {selecionado}")
+else:
+    st.write("Nenhum item na lista.")
