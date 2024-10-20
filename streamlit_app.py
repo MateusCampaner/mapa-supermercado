@@ -66,7 +66,7 @@ else:
 if len(st.session_state.itens) == 1:
     st.session_state.selected_image = "mapa1/mapa1.png"
 # Se houver exatamente dois itens na lista e nenhum deles estiver ticado
-elif len(st.session_state.itens) == 2 and itens_ticados == 0:
+elif len(st.session_state.itens) >= 2 and itens_ticados == 0:
     st.session_state.selected_image = "mapa1/mapa2.png"
 
 if st.sidebar.button("Limpar lista"):
