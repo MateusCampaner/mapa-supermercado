@@ -1,9 +1,8 @@
 import streamlit as st
 
-# Inicializando a lista de itens se ainda não existir
+# Inicializando a lista de itens e a imagem se ainda não existir
 if 'itens' not in st.session_state:
     st.session_state.itens = []
-
 if 'selected_image' not in st.session_state:
     st.session_state.selected_image = "mapa-sem-rota.png"  # Imagem inicial
 
@@ -27,12 +26,13 @@ def adicionar_item():
 
 def limpar_lista():
     st.session_state.itens.clear()  
-    st.session_state.selected_image = "mapa-sem-rota.png"  
-    st.experimental_rerun()
+    st.session_state.selected_image = "mapa-sem-rota.png"  # Resetar a imagem
 
+# Exibir logo no sidebar
 image_path = "logo-cart.png" 
 st.sidebar.image(image_path, width=200)
 
+# Inputs no sidebar
 st.sidebar.text_input("Adicionar item:", key='novo_item')
 st.sidebar.button("Adicionar", on_click=adicionar_item)
 
@@ -58,7 +58,7 @@ if itens_ticados > 0:
         st.session_state.selected_image = tick_to_image[itens_ticados]
 else:
     if st.session_state.itens:  # Se a lista não estiver vazia
-        st.session_state.selected_image = "mapa-sem-rota.png"  # Imagem 8
+        st.session_state.selected_image = "mapa-sem-rota.png"  # Imagem padrão se a lista estiver vazia
     else:
         st.session_state.selected_image = "mapa-sem-rota.png"  # Imagem padrão se a lista estiver vazia
 
@@ -72,5 +72,6 @@ elif len(st.session_state.itens) == 2 and itens_ticados == 0:
 if st.sidebar.button("Limpar lista"):
     limpar_lista()
 
+# Exibindo o título e a imagem do mapa
 st.title("Mapa do Supermercado")
 st.image(st.session_state.selected_image, width=800)
