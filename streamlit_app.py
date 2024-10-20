@@ -58,7 +58,7 @@ if itens_ticados > 0:
         st.session_state.selected_image = tick_to_image[itens_ticados]
 else:
     if st.session_state.itens:  # Se a lista não estiver vazia
-        st.session_state.selected_image = "mapa1/mapa8.png"  # Imagem 8
+        st.session_state.selected_image = "mapa-sem-rota.png"  # Imagem 8
     else:
         st.session_state.selected_image = "mapa-sem-rota.png"  # Imagem padrão se a lista estiver vazia
 
